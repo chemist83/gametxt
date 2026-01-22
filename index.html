@@ -2,43 +2,29 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>SİSTEM HATASI - 666</title>
+    <title>Karanlık Oda - 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="start-screen">
-        <h1 class="glitch">KRİTİK HATA</h1>
-        <p>Sistemi başlatmak için adınızı girin:</p>
-        <input type="text" id="username" placeholder="Adınız...">
-        <button onclick="startGame()">SİSTEMİ ONAR</button>
+        <h1>SİSTEME GİRİŞ</h1>
+        <input type="text" id="username" placeholder="Adını gir...">
+        <button onclick="init3D()">BAŞLAT</button>
     </div>
 
-    <div id="game-container" class="hidden">
-        <div id="room-bg"></div> <div id="window-scare"></div> 
-
+    <div id="game-ui" class="hidden">
         <div id="monitor">
-            <div id="terminal">
-                <p id="msg-box">> Bağlantı kuruldu...</p>
-                <h2 id="question">Hazır mısın?</h2>
-                <div id="options">
-                    <button onclick="nextStep(1)">Evet</button>
-                    <button onclick="nextStep(2)">Hayır</button>
-                </div>
+            <p id="question">Orada mısın?</p>
+            <div id="buttons">
+                <button onclick="nextStep()">Evet</button>
+                <button onclick="nextStep()">Hayır</button>
             </div>
         </div>
-
-        <div id="camera-popup" class="hidden">
-            <p>site.com kameranıza erişmek istiyor.</p>
-            <button onclick="closeCamera()">İzin Ver</button>
-            <button onclick="closeCamera()">Engelle</button>
-        </div>
-
-        <div id="jumpscare" class="hidden">
-            <h1 id="final-name"></h1>
-        </div>
     </div>
 
+    <div id="jumpscare" class="hidden"></div>
     <script src="script.js"></script>
 </body>
 </html>
+
