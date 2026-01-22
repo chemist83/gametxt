@@ -8,17 +8,20 @@
 </head>
 <body>
     <div id="start-screen">
-        <h1>SİSTEME GİRİŞ</h1>
+        <h1 class="glitch">SİSTEME GİRİŞ</h1>
         <input type="text" id="username" placeholder="Adını gir...">
         <button onclick="init3D()">BAŞLAT</button>
     </div>
 
     <div id="game-ui" class="hidden">
-        <div id="monitor">
-            <p id="question">Orada mısın?</p>
-            <div id="buttons">
-                <button onclick="nextStep()">Evet</button>
-                <button onclick="nextStep()">Hayır</button>
+        <div id="pc-monitor">
+            <div id="terminal-screen">
+                <p id="system-log">> Sistem aktif...</p>
+                <h2 id="question">Orada mısın?</h2>
+                <div id="buttons">
+                    <button onclick="nextStep()">Evet</button>
+                    <button onclick="nextStep()">Hayır</button>
+                </div>
             </div>
         </div>
     </div>
@@ -27,4 +30,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
