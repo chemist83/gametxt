@@ -1,45 +1,46 @@
-let scene, camera, renderer, cube;
+let scene, camera, renderer;
 let userName = "";
 
 function init3D() {
-    userName = document.getElementById('username').value || "Yabancı";
+    userName = document.getElementById('username').value || "Bilinmeyen";
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-ui').classList.remove('hidden');
 
-    // 1. Sahne ve Kamera
+    // Sahne
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050000); // Çok koyu kırmızı/siyah arka plan
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    scene.background = new THREE.Color(0x020000);
 
+    // Kamera
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 0.1);
+
+    // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // 2. Odayı Oluşturma (Kutularla)
-    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, side: THREE.BackSide });
-    const roomGeometry = new THREE.BoxGeometry(10, 10, 10);
-    const room = new THREE.Mesh(roomGeometry, wallMaterial);
+    // ODA OBJESİ (Kutu içi)
+    const geometry = new THREE.BoxGeometry(20, 20, 20);
+    const material = new THREE.MeshBasicMaterial({ 
+        color: 0x111111, 
+        side: THREE.BackSide,
+        wireframe: true // Başlangıçta odayı görebilmen için çizgisel yaptık
+    });
+    const room = new THREE.Mesh(geometry, material);
     scene.add(room);
 
-    // 3. Odaya tekinsiz bir ışık efekti (Kırmızı bir nokta)
-    const light = new THREE.PointLight(0xff0000, 1, 10);
-    light.position.set(0, 2, 0);
-    scene.add(light);
+    // Kırmızı bir ışık kaynağı gibi duran küçük bir küre (Karakterin olduğu yer)
+    const ghostGeo = new THREE.SphereGeometry(1, 32, 32);
+    const ghostMat = new THREE.MeshBasicMaterial({ color: 0x330000 });
+    const ghost = new THREE.Mesh(ghostGeo, ghostMat);
+    ghost.position.set(0, 0, -8);
+    scene.add(ghost);
 
-    // 4. Pencere gibi duran beyaz bir obje (Karakterin görüneceği yer)
-    const windowGeo = new THREE.PlaneGeometry(2, 3);
-    const windowMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
-    const windowMesh = new THREE.Mesh(windowGeo, windowMat);
-    windowMesh.position.set(0, 0, -4.9); // Karşı duvara yapıştır
-    scene.add(windowMesh);
-
-    camera.position.z = 0.1; // Oda merkezindeyiz
     animate();
 }
 
-// Tablet Kontrolleri (Dokunarak Etrafa Bakma)
-let lon = 0, lat = 0, isUserInteracting = false;
-let onPointerDownPointerX = 0, onPointerDownPointerY = 0, onPointerDownLon = 0, onPointerDownLat = 0;
+// Tablet Bakış Kontrolü
+let lon = 0, lat = 0, isUserInteracting = false, onPointerDownPointerX = 0, onPointerDownPointerY = 0, onPointerDownLon = 0, onPointerDownLat = 0;
 
 document.addEventListener('pointerdown', (e) => {
     isUserInteracting = true;
@@ -51,8 +52,8 @@ document.addEventListener('pointerdown', (e) => {
 
 document.addEventListener('pointermove', (e) => {
     if (isUserInteracting) {
-        lon = (onPointerDownPointerX - e.clientX) * 0.1 + onPointerDownLon;
-        lat = (e.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+        lon = (onPointerDownPointerX - e.clientX) * 0.2 + onPointerDownLon;
+        lat = (e.clientY - onPointerDownPointerY) * 0.2 + onPointerDownLat;
     }
 });
 
@@ -64,18 +65,17 @@ function animate() {
     const phi = THREE.MathUtils.degToRad(90 - lat);
     const theta = THREE.MathUtils.degToRad(lon);
 
-    const target = new THREE.Vector3();
-    target.x = Math.sin(phi) * Math.cos(theta);
-    target.y = Math.cos(phi);
-    target.z = Math.sin(phi) * Math.sin(theta);
-    
+    const target = new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta),
+        Math.cos(phi),
+        Math.sin(phi) * Math.sin(theta)
+    );
     camera.lookAt(target);
     renderer.render(scene, camera);
 }
 
 function nextStep() {
-    // Jumpscare tetikleyici
-    document.getElementById('jumpscare').style.display = 'flex';
-    document.getElementById('jumpscare').innerHTML = `<h1>${userName.toUpperCase()} BURADAN ÇIKIŞ YOK!</h1>`;
+    document.getElementById('jumpscare').classList.remove('hidden');
+    document.getElementById('jumpscare').innerHTML = `<h1>ELVEDA ${userName.toUpperCase()}</h1>`;
 }
 
