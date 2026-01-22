@@ -1,46 +1,56 @@
-body, html { margin: 0; padding: 0; background: black; color: #f00; font-family: 'Courier New', monospace; overflow: hidden; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
 
 .hidden { display: none !important; }
 
+/* 3D Sahne arkada kalacak, UI önde */
+canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+
+#game-ui {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10; /* 3D sahnenin üzerinde durması için */
+    pointer-events: none; /* Mouse hareketlerinin arkadaki 3D sahneye geçmesi için */
+}
+
+#pc-monitor {
+    width: 350px;
+    height: 250px;
+    background: #000;
+    border: 10px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    pointer-events: auto; /* Sadece bu kutu içindeki butonlar tıklanabilir olsun */
+    padding: 15px;
+    display: flex; flex-direction: column;
+}
+
+#terminal-screen {
+    flex-grow: 1;
+    border: 2px solid #1a0000;
+    background: radial-gradient(circle, #0a0000 0%, #000 100%);
+    color: #f00;
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    font-size: 14px;
+}
+
 #start-screen {
-    position: fixed; width: 100%; height: 100%; display: flex; flex-direction: column; 
-    justify-content: center; align-items: center; z-index: 1000; background: #050000;
+    position: fixed; width: 100%; height: 100%; 
+    background: black; z-index: 100;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: red;
 }
 
-input { background: #111; border: 1px solid #f00; color: #f00; padding: 10px; margin-bottom: 10px; text-align: center; }
-
-#game-container { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-
-#room-bg {
-    position: absolute; width: 115%; height: 115%;
-    background: url('oda.jpg') no-repeat center; background-size: cover;
-    filter: brightness(0.2) grayscale(0.5); transition: transform 0.1s ease-out;
+button {
+    background: #1a0000; color: #f00; border: 1px solid #f00;
+    padding: 10px; cursor: pointer; margin: 5px;
 }
 
-#window-scare {
-    position: absolute; top: 15%; right: 12%; width: 200px; height: 300px;
-    background: url('karakter.jpg') no-repeat center; background-size: contain;
-    opacity: 0; transition: opacity 5s ease-in;
-}
-
-#monitor {
-    position: relative; width: 450px; height: 320px; background: #000;
-    border: 3px solid #222; box-shadow: 0 0 30px rgba(255, 0, 0, 0.2); padding: 20px; z-index: 50;
-}
-
-#camera-popup {
-    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-    background: white; color: black; padding: 15px; border-radius: 5px; z-index: 100; font-family: Arial;
-}
+button:hover { background: #f00; color: #000; }
 
 #jumpscare {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: url('karakter.jpg') no-repeat center; background-size: cover;
-    z-index: 999; display: flex; justify-content: center; align-items: flex-end;
+    background: red; z-index: 1000; display: flex; justify-content: center; align-items: center;
 }
-
-#final-name { font-size: 80px; color: white; text-shadow: 0 0 20px red; margin-bottom: 50px; }
-
-.glitch { animation: flash 0.1s infinite; }
-@keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
