@@ -1,50 +1,71 @@
+let scene, camera, renderer, sphere;
 let userName = "";
-let currentStep = 0;
 
-function startGame() {
-    userName = document.getElementById('username').value || "Yabancı";
+function init3D() {
+    userName = document.getElementById('username').value || "Bilinmeyen";
     document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('game-container').classList.remove('hidden');
-    document.getElementById('msg-box').innerText = `> Hoş geldin, ${userName}.`;
+    document.getElementById('game-ui').classList.remove('hidden');
+
+    // Sahne ve Kamera Ayarı
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 3D Odayı Oluşturma (Sphere/Küre Yöntemi)
+    const geometry = new THREE.SphereGeometry(500, 60, 40);
+    geometry.scale(-1, 1, 1); // Resmi içe doğru çevirir
+
+    const texture = new THREE.TextureLoader().load('oda.jpg');
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    camera.position.set(0, 0, 0.1);
+
+    animate();
 }
 
-// Mouse hareketi (Derinlik hissi)
-document.addEventListener('mousemove', (e) => {
-    const x = (window.innerWidth / 2 - e.pageX) / 25;
-    const y = (window.innerHeight / 2 - e.pageY) / 25;
-    document.getElementById('room-bg').style.transform = `translate(${x}px, ${y}px)`;
+// Tablet Dokunmatik Bakış Kontrolü
+let isUserInteracting = false, onPointerDownPointerX = 0, onPointerDownPointerY = 0,
+    lon = 0, onPointerDownLon = 0, lat = 0, onPointerDownLat = 0;
+
+document.addEventListener('pointerdown', (e) => {
+    isUserInteracting = true;
+    onPointerDownPointerX = e.clientX;
+    onPointerDownPointerY = e.clientY;
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
 });
 
-const story = [
-    { q: "Odada yalnız mısın?", a1: "Evet", a2: "Sanırım..." },
-    { q: "Peki, arkandaki kim?", a1: "Ne?", a2: "Bakmaya korkuyorum" },
-    { q: "Kameranı açmama izin verir misin? Seni görmem lazım.", a1: "Hayır!", a2: "Tamam" },
-    { q: "Çok geç artık... Onlar seni seçti.", a1: "KİM?", a2: "YALVARIRIM" }
-];
-
-function nextStep(choice) {
-    currentStep++;
-
-    if(currentStep === 1) {
-        document.getElementById('window-scare').style.opacity = "0.5"; // Figür yavaşça belirir
+document.addEventListener('pointermove', (e) => {
+    if (isUserInteracting) {
+        lon = (onPointerDownPointerX - e.clientX) * 0.1 + onPointerDownLon;
+        lat = (e.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
     }
+});
 
-    if(currentStep === 2) {
-        document.getElementById('camera-popup').classList.remove('hidden'); // Sahte kamera uyarısı
-    }
+document.addEventListener('pointerup', () => isUserInteracting = false);
 
-    if(currentStep < story.length) {
-        document.getElementById('question').innerText = story[currentStep].q;
-    } else {
-        // FİNAL JUMPSCARE
-        setTimeout(() => {
-            document.getElementById('final-name').innerText = `MERHAMET YOK, ${userName.toUpperCase()}!`;
-            document.getElementById('jumpscare').classList.remove('hidden');
-            // Buraya çığlık sesi ekleyebilirsin
-        }, 1000);
-    }
+function animate() {
+    requestAnimationFrame(animate);
+    lat = Math.max(-85, Math.min(85, lat));
+    const phi = THREE.MathUtils.degToRad(90 - lat);
+    const theta = THREE.MathUtils.degToRad(lon);
+
+    camera.target = new THREE.Vector3(
+        500 * Math.sin(phi) * Math.cos(theta),
+        500 * Math.cos(phi),
+        500 * Math.sin(phi) * Math.sin(theta)
+    );
+    camera.lookAt(camera.target);
+    renderer.render(scene, camera);
 }
 
-function closeCamera() {
-    document.getElementById('camera-popup').classList.add('hidden');
+function nextStep() {
+    // Soru ilerleme ve final jumpscare kodlarını buraya ekleyebilirsin
+    document.getElementById('jumpscare').classList.remove('hidden');
+    document.getElementById('jumpscare').innerHTML = `<h1>ELVEDA ${userName}</h1>`;
 }
