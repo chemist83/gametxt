@@ -1,36 +1,45 @@
-let scene, camera, renderer, sphere;
+let scene, camera, renderer, cube;
 let userName = "";
 
 function init3D() {
-    userName = document.getElementById('username').value || "Bilinmeyen";
-    document.getElementById('start-screen').classList.add('hidden');
+    userName = document.getElementById('username').value || "Yabancı";
+    document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-ui').classList.remove('hidden');
 
-    // Sahne ve Kamera Ayarı
+    // 1. Sahne ve Kamera
     scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050000); // Çok koyu kırmızı/siyah arka plan
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    
-    renderer = new THREE.WebGLRenderer();
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // 3D Odayı Oluşturma (Sphere/Küre Yöntemi)
-    const geometry = new THREE.SphereGeometry(500, 60, 40);
-    geometry.scale(-1, 1, 1); // Resmi içe doğru çevirir
+    // 2. Odayı Oluşturma (Kutularla)
+    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, side: THREE.BackSide });
+    const roomGeometry = new THREE.BoxGeometry(10, 10, 10);
+    const room = new THREE.Mesh(roomGeometry, wallMaterial);
+    scene.add(room);
 
-    const texture = new THREE.TextureLoader().load('oda.jpg');
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
+    // 3. Odaya tekinsiz bir ışık efekti (Kırmızı bir nokta)
+    const light = new THREE.PointLight(0xff0000, 1, 10);
+    light.position.set(0, 2, 0);
+    scene.add(light);
 
-    camera.position.set(0, 0, 0.1);
+    // 4. Pencere gibi duran beyaz bir obje (Karakterin görüneceği yer)
+    const windowGeo = new THREE.PlaneGeometry(2, 3);
+    const windowMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
+    const windowMesh = new THREE.Mesh(windowGeo, windowMat);
+    windowMesh.position.set(0, 0, -4.9); // Karşı duvara yapıştır
+    scene.add(windowMesh);
 
+    camera.position.z = 0.1; // Oda merkezindeyiz
     animate();
 }
 
-// Tablet Dokunmatik Bakış Kontrolü
-let isUserInteracting = false, onPointerDownPointerX = 0, onPointerDownPointerY = 0,
-    lon = 0, onPointerDownLon = 0, lat = 0, onPointerDownLat = 0;
+// Tablet Kontrolleri (Dokunarak Etrafa Bakma)
+let lon = 0, lat = 0, isUserInteracting = false;
+let onPointerDownPointerX = 0, onPointerDownPointerY = 0, onPointerDownLon = 0, onPointerDownLat = 0;
 
 document.addEventListener('pointerdown', (e) => {
     isUserInteracting = true;
@@ -55,17 +64,18 @@ function animate() {
     const phi = THREE.MathUtils.degToRad(90 - lat);
     const theta = THREE.MathUtils.degToRad(lon);
 
-    camera.target = new THREE.Vector3(
-        500 * Math.sin(phi) * Math.cos(theta),
-        500 * Math.cos(phi),
-        500 * Math.sin(phi) * Math.sin(theta)
-    );
-    camera.lookAt(camera.target);
+    const target = new THREE.Vector3();
+    target.x = Math.sin(phi) * Math.cos(theta);
+    target.y = Math.cos(phi);
+    target.z = Math.sin(phi) * Math.sin(theta);
+    
+    camera.lookAt(target);
     renderer.render(scene, camera);
 }
 
 function nextStep() {
-    // Soru ilerleme ve final jumpscare kodlarını buraya ekleyebilirsin
-    document.getElementById('jumpscare').classList.remove('hidden');
-    document.getElementById('jumpscare').innerHTML = `<h1>ELVEDA ${userName}</h1>`;
+    // Jumpscare tetikleyici
+    document.getElementById('jumpscare').style.display = 'flex';
+    document.getElementById('jumpscare').innerHTML = `<h1>${userName.toUpperCase()} BURADAN ÇIKIŞ YOK!</h1>`;
 }
+
