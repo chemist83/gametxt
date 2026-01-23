@@ -1,56 +1,57 @@
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+body, html { 
+    margin: 0; padding: 0; width: 100%; height: 100%; 
+    overflow: hidden; background: #000; font-family: 'Courier New', monospace;
+}
 
 .hidden { display: none !important; }
 
-/* 3D Sahne arkada kalacak, UI önde */
-canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-
-#game-ui {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-    z-index: 10; /* 3D sahnenin üzerinde durması için */
-    pointer-events: none; /* Mouse hareketlerinin arkadaki 3D sahneye geçmesi için */
-}
-
-#pc-monitor {
-    width: 350px;
-    height: 250px;
-    background: #000;
-    border: 10px solid #333;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-    pointer-events: auto; /* Sadece bu kutu içindeki butonlar tıklanabilir olsun */
-    padding: 15px;
-    display: flex; flex-direction: column;
-}
-
-#terminal-screen {
-    flex-grow: 1;
-    border: 2px solid #1a0000;
-    background: radial-gradient(circle, #0a0000 0%, #000 100%);
-    color: #f00;
-    font-family: 'Courier New', monospace;
-    padding: 10px;
-    font-size: 14px;
+/* 3D Sahne ve Gri Filtre */
+canvas { 
+    position: absolute; top: 0; left: 0; z-index: 1; 
+    filter: grayscale(1) contrast(1.5); 
 }
 
 #start-screen {
-    position: fixed; width: 100%; height: 100%; 
-    background: black; z-index: 100;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    color: red;
+    position: fixed; width: 100%; height: 100%; z-index: 100;
+    background: black; color: #ccc; display: flex; 
+    flex-direction: column; justify-content: center; align-items: center;
+}
+
+#game-ui {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10; pointer-events: none;
+}
+
+#pc-monitor {
+    width: 400px; height: 300px; background: #000;
+    border: 15px solid #1a1a1a; border-radius: 5px;
+    box-shadow: 0 0 100px rgba(0,0,0,1);
+    pointer-events: auto; transform: perspective(1000px) rotateX(5deg);
+    display: flex; flex-direction: column; padding: 10px;
+}
+
+#terminal-screen {
+    flex-grow: 1; background: #050505; color: #fff;
+    padding: 20px; border: 1px solid #222; position: relative;
+}
+
+/* Ekran Cızırtı Efekti */
+#terminal-screen::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px);
+    pointer-events: none;
 }
 
 button {
-    background: #1a0000; color: #f00; border: 1px solid #f00;
-    padding: 10px; cursor: pointer; margin: 5px;
+    background: transparent; color: #fff; border: 1px solid #fff;
+    padding: 10px 20px; cursor: pointer; margin: 10px 5px;
 }
 
-button:hover { background: #f00; color: #000; }
+button:hover { background: #fff; color: #000; }
 
 #jumpscare {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: red; z-index: 1000; display: flex; justify-content: center; align-items: center;
+    background: #fff; color: #000; z-index: 1000;
+    display: flex; justify-content: center; align-items: center; font-size: 40px;
 }
