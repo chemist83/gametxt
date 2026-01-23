@@ -2,31 +2,36 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Karanlık Oda - 3D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Survey: Project Breynus</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div id="start-screen">
-        <h1 class="glitch">SİSTEME GİRİŞ</h1>
-        <input type="text" id="username" placeholder="Adını gir...">
-        <button onclick="init3D()">BAŞLAT</button>
+        <h1 class="glitch">START SURVEY</h1>
+        <p>Devam etmek için sisteme isminizi tanımlayın:</p>
+        <input type="text" id="username" placeholder="İsim...">
+        <br>
+        <button onclick="init3D()">SİSTEMİ BAŞLAT</button>
     </div>
 
     <div id="game-ui" class="hidden">
         <div id="pc-monitor">
             <div id="terminal-screen">
-                <p id="system-log">> Sistem aktif...</p>
-                <h2 id="question">Orada mısın?</h2>
-                <div id="buttons">
-                    <button onclick="nextStep()">Evet</button>
-                    <button onclick="nextStep()">Hayır</button>
+                <p id="system-log">> Bağlantı başarılı...</p>
+                <h2 id="question">Ankete başlamaya hazır mısın?</h2>
+                <div id="options">
+                    <button onclick="nextStep()">EVET</button>
+                    <button onclick="nextStep()">HAYIR</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="jumpscare" class="hidden"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
